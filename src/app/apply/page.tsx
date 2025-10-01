@@ -18,7 +18,8 @@ import {
   Phone,
   Mail,
   Users,
-  Building
+  Building,
+  AlertCircle
 } from "lucide-react"
 import Link from "next/link"
 
@@ -48,6 +49,7 @@ export default function ApplicationPage() {
   const [currentStep, setCurrentStep] = useState(1)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -74,6 +76,7 @@ export default function ApplicationPage() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
+    setError('')
 
     try {
       const response = await fetch('/api/apply', {
@@ -90,12 +93,12 @@ export default function ApplicationPage() {
       } else {
         const data = await response.json()
         console.error('Submission failed:', data.error)
-        // You could add error state management here if needed
-        alert('Failed to submit application. Please try again or contact us directly.')
+        // Show error in form instead of alert
+        setError(data.error || 'Failed to submit application. Please try again or contact us directly.')
       }
     } catch (error) {
       console.error('Submission error:', error)
-      alert('Failed to submit application. Please check your connection and try again.')
+      setError('Failed to submit application. Please check your connection and try again.')
     } finally {
       setIsSubmitting(false)
     }
@@ -296,6 +299,12 @@ export default function ApplicationPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-6">
+                    {error && (
+                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+                        <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+                        <span className="text-red-700">{error}</span>
+                      </div>
+                    )}
 
                     {/* Step 1: Agent Details */}
                     {currentStep === 1 && (
