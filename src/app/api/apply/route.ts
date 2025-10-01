@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     // Send email using Resend
     const { data, error } = await resend.emails.send({
-      from: 'Agents Capital Applications <applications@agentscapital.co>',
+      from: 'Agents Capital Applications <onboarding@resend.dev>',
       to: ['brannancoady@gmail.com'],
       subject: `New Commission Advance Application - ${agentName} (${companyName})`,
       html: `
