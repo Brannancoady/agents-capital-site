@@ -1,0 +1,7 @@
+Deployment triggered at: 2025-10-01 23:30 UTC
+
+Fix applied: Browser modal errors replaced with proper in-form error handling
+Changes: Replaced alert() calls with setError() state management and proper error UI
+
+🤖 Generated with [Same](https://same.new)
+Co-Authored-By: Same <noreply@same.new>
