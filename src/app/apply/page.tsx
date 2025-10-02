@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -50,6 +50,7 @@ export default function ApplicationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const netlifyFormRef = useRef<HTMLFormElement>(null)
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -76,30 +77,16 @@ export default function ApplicationPage() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true)
-    setError('')
+    setError("")
 
     try {
-      const response = await fetch('/api/apply', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      if (response.ok) {
-        const data = await response.json()
-        setIsSubmitted(true)
-      } else {
-        const data = await response.json()
-        console.error('Submission failed:', data.error)
-        // Show error in form instead of alert
-        setError(data.error || 'Failed to submit application. Please try again or contact us directly.')
+      // Submit the hidden Netlify form
+      if (netlifyFormRef.current) {
+        netlifyFormRef.current.submit()
       }
     } catch (error) {
-      console.error('Submission error:', error)
-      setError('Failed to submit application. Please check your connection and try again.')
-    } finally {
+      console.error("Submission error:", error)
+      setError("Failed to submit application. Please try again.")
       setIsSubmitting(false)
     }
   }
@@ -593,6 +580,31 @@ export default function ApplicationPage() {
                     </div>
                   </CardContent>
                 </Card>
+              </form>
+
+              {/* Hidden Netlify form for submission */}
+              <form
+                ref={netlifyFormRef}
+                name="application"
+                method="POST"
+                data-netlify="true"
+                style={{ display: "none" }}
+              >
+                <input type="hidden" name="form-name" value="application" />
+                <input type="hidden" name="agentName" value={formData.agentName} />
+                <input type="hidden" name="companyName" value={formData.companyName} />
+                <input type="hidden" name="email" value={formData.email} />
+                <input type="hidden" name="phone" value={formData.phone} />
+                <input type="hidden" name="licenseNumber" value={formData.licenseNumber} />
+                <input type="hidden" name="userType" value={formData.userType} />
+                <input type="hidden" name="propertyAddress" value={formData.propertyAddress} />
+                <input type="hidden" name="salePrice" value={formData.salePrice} />
+                <input type="hidden" name="commissionRate" value={formData.commissionRate} />
+                <input type="hidden" name="commissionAmount" value={formData.commissionAmount} />
+                <input type="hidden" name="agentShare" value={formData.agentShare} />
+                <input type="hidden" name="expectedExchangeDate" value={formData.expectedExchangeDate} />
+                <input type="hidden" name="expectedCompletionDate" value={formData.expectedCompletionDate} />
+                <input type="hidden" name="additionalNotes" value={formData.additionalNotes} />
               </form>
             </div>
           </div>
