@@ -15,58 +15,10 @@ import {
   MapPin,
   Clock,
   Send,
-  Building,
-  CheckCircle,
-  AlertCircle
+  Building
 } from "lucide-react"
 
 export default function ContactPage() {
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    company: '',
-    subject: '',
-    message: ''
-  })
-
-      ...prev,
-      [field]: value
-    }))
-    // Clear error when user starts typing
-  }
-
-    e.preventDefault()
-
-    // Validate required fields
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.subject || !formData.message) {
-      return
-    }
-
-
-    try {
-      console.log('Submitting form data:', formData)
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData)
-      })
-
-      console.log('Response status:', response.status)
-
-      if (response.ok) {
-      } else {
-        const data = await response.json()
-        console.log('Error response:', data)
-      }
-    } catch (err) {
-      console.error('Form submission error:', err)
-    } finally {
-    }
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <SharedNavigation />
@@ -147,8 +99,6 @@ export default function ContactPage() {
                   </Button>
                 </CardContent>
               </Card>
-
-
             </div>
 
             {/* Office Information */}
@@ -163,28 +113,25 @@ export default function ContactPage() {
                 </CardHeader>
                 <CardContent>
                   <form className="space-y-6" method="POST" data-netlify="true" name="contact">
+                    <input type="hidden" name="form-name" value="contact" />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="firstName">First Name *</Label>
                         <Input
                           id="firstName"
+                          name="firstName"
                           placeholder="John"
                           required
-                          name="firstName"
-                          
-                          
                         />
                       </div>
                       <div>
                         <Label htmlFor="lastName">Last Name *</Label>
                         <Input
                           id="lastName"
+                          name="lastName"
                           placeholder="Smith"
                           required
-                          name="lastName"
-                          
-                          
                         />
                       </div>
                     </div>
@@ -193,12 +140,10 @@ export default function ContactPage() {
                       <Label htmlFor="email">Email Address *</Label>
                       <Input
                         id="email"
+                        name="email"
                         type="email"
                         placeholder="john@example.com"
                         required
-                        name="email"
-                        
-                        
                       />
                     </div>
 
@@ -206,11 +151,9 @@ export default function ContactPage() {
                       <Label htmlFor="phone">Phone Number</Label>
                       <Input
                         id="phone"
+                        name="phone"
                         type="tel"
                         placeholder="07000 000000"
-                        name="phone"
-                        
-                        
                       />
                     </div>
 
@@ -218,10 +161,8 @@ export default function ContactPage() {
                       <Label htmlFor="company">Company/Agency</Label>
                       <Input
                         id="company"
-                        placeholder="Your estate agency"
                         name="company"
-                        
-                        
+                        placeholder="Your estate agency"
                       />
                     </div>
 
@@ -229,11 +170,9 @@ export default function ContactPage() {
                       <Label htmlFor="subject">Subject *</Label>
                       <Input
                         id="subject"
+                        name="subject"
                         placeholder="How can we help?"
                         required
-                        name="subject"
-                        
-                        
                       />
                     </div>
 
@@ -241,16 +180,13 @@ export default function ContactPage() {
                       <Label htmlFor="message">Message *</Label>
                       <Textarea
                         id="message"
+                        name="message"
                         placeholder="Tell us more about your enquiry..."
                         rows={5}
                         required
-                        name="message"
-                        
-                        
                       />
                     </div>
 
-                    <Button
                     <Button
                       type="submit"
                       className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
@@ -325,8 +261,6 @@ export default function ContactPage() {
                     </div>
                   </CardContent>
                 </Card>
-
-
               </div>
             </div>
           </div>
