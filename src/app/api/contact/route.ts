@@ -5,8 +5,22 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req: NextRequest) {
   try {
+    // Check if Resend API key is available
+    console.log('RESEND_API_KEY present:', !!process.env.RESEND_API_KEY)
+    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length || 0)
+
+    if (!process.env.RESEND_API_KEY) {
+      console.error('Missing RESEND_API_KEY environment variable')
+      return NextResponse.json(
+        { error: 'Email service not configured' },
+        { status: 500 }
+      )
+    }
+
     const body = await req.json()
     const { firstName, lastName, email, phone, company, subject, message } = body
+
+    console.log('Form submission data:', { firstName, lastName, email, subject, hasMessage: !!message })
 
     // Validate required fields
     if (!firstName || !lastName || !email || !subject || !message) {
@@ -64,9 +78,16 @@ export async function POST(req: NextRequest) {
     })
 
     if (error) {
-      console.error('Resend error:', error)
+      console.error('Resend error details:', JSON.stringify(error, null, 2))
+      console.error('Resend error type:', typeof error)
+      console.error('Resend error message:', error.message || error)
+
       return NextResponse.json(
-        { error: 'Failed to send email' },
+        {
+          error: 'Failed to send email',
+          details: error.message || 'Unknown Resend error',
+          debugInfo: process.env.NODE_ENV === 'development' ? error : undefined
+        },
         { status: 500 }
       )
     }
@@ -77,8 +98,14 @@ export async function POST(req: NextRequest) {
     )
   } catch (error) {
     console.error('Contact form error:', error)
+    console.error('Error details:', JSON.stringify(error, null, 2))
+
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        debugInfo: process.env.NODE_ENV === 'development' ? error : undefined
+      },
       { status: 500 }
     )
   }
