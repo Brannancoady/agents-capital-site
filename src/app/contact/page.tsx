@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -22,7 +21,6 @@ import {
 } from "lucide-react"
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
@@ -31,30 +29,20 @@ export default function ContactPage() {
     subject: '',
     message: ''
   })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)
-  const [error, setError] = useState('')
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
       ...prev,
       [field]: value
     }))
     // Clear error when user starts typing
-    if (error) setError('')
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
     // Validate required fields
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.subject || !formData.message) {
-      setError('Please fill in all required fields')
       return
     }
 
-    setIsSubmitting(true)
-    setError('')
 
     try {
       console.log('Submitting form data:', formData)
@@ -69,62 +57,16 @@ export default function ContactPage() {
       console.log('Response status:', response.status)
 
       if (response.ok) {
-        setIsSubmitted(true)
       } else {
         const data = await response.json()
         console.log('Error response:', data)
-        setError(data.error || 'Failed to send message. Please try again.')
       }
     } catch (err) {
       console.error('Form submission error:', err)
-      setError(`Network error: ${err instanceof Error ? err.message : 'Please check your connection and try again.'}`)
     } finally {
-      setIsSubmitting(false)
     }
   }
 
-  if (isSubmitted) {
-    return (
-      <div className="min-h-screen bg-background">
-        <SharedNavigation />
-
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="h-10 w-10 text-green-600" />
-            </div>
-            <h1 className="text-4xl font-bold mb-4">Message Sent Successfully!</h1>
-            <p className="text-xl text-slate-600 mb-8">
-              Thank you for contacting Agents Capital. We'll get back to you within 2 hours during business hours.
-            </p>
-
-            <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
-              <h3 className="font-semibold text-green-800 mb-2">What happens next?</h3>
-              <ul className="text-sm text-green-700 space-y-1 text-left">
-                <li>• We'll review your enquiry and respond within 2 hours (during business hours)</li>
-                <li>• You'll receive a detailed response to your email address</li>
-                <li>• If urgent, you can call us directly on 07368162737</li>
-              </ul>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/">
-                <Button variant="outline" size="lg">Return to Homepage</Button>
-              </Link>
-              <a href="tel:07368162737">
-                <Button size="lg">
-                  <Phone className="mr-2 h-4 w-4" />
-                  Call Us Now
-                </Button>
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <SharedFooter />
-      </div>
-    )
-  }
   return (
     <div className="min-h-screen bg-background">
       <SharedNavigation />
@@ -220,13 +162,7 @@ export default function ContactPage() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form className="space-y-6" onSubmit={handleSubmit}>
-                    {error && (
-                      <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
-                        <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
-                        <span className="text-red-700">{error}</span>
-                      </div>
-                    )}
+                  <form className="space-y-6" method="POST" data-netlify="true" name="contact">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -235,9 +171,9 @@ export default function ContactPage() {
                           id="firstName"
                           placeholder="John"
                           required
-                          value={formData.firstName}
-                          onChange={(e) => handleInputChange('firstName', e.target.value)}
-                          disabled={isSubmitting}
+                          name="firstName"
+                          
+                          
                         />
                       </div>
                       <div>
@@ -246,9 +182,9 @@ export default function ContactPage() {
                           id="lastName"
                           placeholder="Smith"
                           required
-                          value={formData.lastName}
-                          onChange={(e) => handleInputChange('lastName', e.target.value)}
-                          disabled={isSubmitting}
+                          name="lastName"
+                          
+                          
                         />
                       </div>
                     </div>
@@ -260,9 +196,9 @@ export default function ContactPage() {
                         type="email"
                         placeholder="john@example.com"
                         required
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        disabled={isSubmitting}
+                        name="email"
+                        
+                        
                       />
                     </div>
 
@@ -272,9 +208,9 @@ export default function ContactPage() {
                         id="phone"
                         type="tel"
                         placeholder="07000 000000"
-                        value={formData.phone}
-                        onChange={(e) => handleInputChange('phone', e.target.value)}
-                        disabled={isSubmitting}
+                        name="phone"
+                        
+                        
                       />
                     </div>
 
@@ -283,9 +219,9 @@ export default function ContactPage() {
                       <Input
                         id="company"
                         placeholder="Your estate agency"
-                        value={formData.company}
-                        onChange={(e) => handleInputChange('company', e.target.value)}
-                        disabled={isSubmitting}
+                        name="company"
+                        
+                        
                       />
                     </div>
 
@@ -295,9 +231,9 @@ export default function ContactPage() {
                         id="subject"
                         placeholder="How can we help?"
                         required
-                        value={formData.subject}
-                        onChange={(e) => handleInputChange('subject', e.target.value)}
-                        disabled={isSubmitting}
+                        name="subject"
+                        
+                        
                       />
                     </div>
 
@@ -308,28 +244,19 @@ export default function ContactPage() {
                         placeholder="Tell us more about your enquiry..."
                         rows={5}
                         required
-                        value={formData.message}
-                        onChange={(e) => handleInputChange('message', e.target.value)}
-                        disabled={isSubmitting}
+                        name="message"
+                        
+                        
                       />
                     </div>
 
                     <Button
+                    <Button
                       type="submit"
                       className="w-full bg-green-600 hover:bg-green-700 text-lg py-3"
-                      disabled={isSubmitting}
                     >
-                      {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                          Sending Message...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Message
-                        </>
-                      )}
+                      <Send className="h-4 w-4 mr-2" />
+                      Send Message
                     </Button>
                   </form>
                 </CardContent>
