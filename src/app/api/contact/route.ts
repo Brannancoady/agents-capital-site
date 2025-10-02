@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     // Send email using Resend
     const { data, error } = await resend.emails.send({
       from: 'Agents Capital Website <onboarding@resend.dev>',
-      to: ['brannancoady@gmail.com'],
+      to: ['brannan@anywayventures.com'],
       subject: `New Contact Form Submission: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
