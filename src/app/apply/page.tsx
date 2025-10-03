@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -50,7 +50,7 @@ export default function ApplicationPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
-  const netlifyFormRef = useRef<HTMLFormElement>(null)
+
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -80,13 +80,25 @@ export default function ApplicationPage() {
     setError("")
 
     try {
-      // Submit the hidden Netlify form
-      if (netlifyFormRef.current) {
-        netlifyFormRef.current.submit()
+      // Submit to the static HTML file for Netlify Forms
+      const response = await fetch('/__forms.html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          'form-name': 'application',
+          ...formData
+        }).toString()
+      })
+
+      if (response.ok) {
+        setIsSubmitted(true)
+      } else {
+        setError("Failed to submit application. Please try again or contact us directly.")
       }
     } catch (error) {
       console.error("Submission error:", error)
-      setError("Failed to submit application. Please try again.")
+      setError("Failed to submit application. Please check your connection and try again.")
+    } finally {
       setIsSubmitting(false)
     }
   }
@@ -582,30 +594,7 @@ export default function ApplicationPage() {
                 </Card>
               </form>
 
-              {/* Hidden Netlify form for submission */}
-              <form
-                ref={netlifyFormRef}
-                name="application"
-                method="POST"
-                data-netlify="true"
-                style={{ display: "none" }}
-              >
-                <input type="hidden" name="form-name" value="application" />
-                <input type="hidden" name="agentName" value={formData.agentName} />
-                <input type="hidden" name="companyName" value={formData.companyName} />
-                <input type="hidden" name="email" value={formData.email} />
-                <input type="hidden" name="phone" value={formData.phone} />
-                <input type="hidden" name="licenseNumber" value={formData.licenseNumber} />
-                <input type="hidden" name="userType" value={formData.userType} />
-                <input type="hidden" name="propertyAddress" value={formData.propertyAddress} />
-                <input type="hidden" name="salePrice" value={formData.salePrice} />
-                <input type="hidden" name="commissionRate" value={formData.commissionRate} />
-                <input type="hidden" name="commissionAmount" value={formData.commissionAmount} />
-                <input type="hidden" name="agentShare" value={formData.agentShare} />
-                <input type="hidden" name="expectedExchangeDate" value={formData.expectedExchangeDate} />
-                <input type="hidden" name="expectedCompletionDate" value={formData.expectedCompletionDate} />
-                <input type="hidden" name="additionalNotes" value={formData.additionalNotes} />
-              </form>
+
             </div>
           </div>
         </div>
